@@ -58,31 +58,31 @@ class Ticket(commands.Cog):
             Button(style=ButtonStyle.grey, label="❌ DELETE TICKET"),
             Button(style=ButtonStyle.grey, label="🔓 REOPEN TICKET")
             ]])
+            while True:
+                res3 = await self.client.wait_for("button_click")
+                if res3.component.label == "✉️ SAVE TRANSCRIPT":
+                    with open(os.path.dirname(__file__) + f'\\..\\transcripts\\{res3.channel.name}.txt', 'a') as f:
+                        messages = await ctx.message.channel.history(limit=200).flatten()
+                        for i in messages:
+                            f.write(f'{i}\n')
+                        f.close
+                    await res3.author.send(file=discord.File(os.path.dirname(__file__) + f'\\..\\transcripts\\{res3.channel.name}.txt'))
+                    os.remove(os.path.dirname(__file__) + f'\\..\\transcripts\\{res3.channel.name}.txt')
 
-            res3 = await self.client.wait_for("button_click")
-            if res3.component.label == "✉️ SAVE TRANSCRIPT":
-                with open(os.path.dirname(__file__) + f'\\..\\transcripts\\{res3.channel.name}.txt', 'a') as f:
-                    messages = await ctx.message.channel.history(limit=200).flatten()
-                    for i in messages:
-                        f.write(f'{i}\n')
-                    f.close
-                await res3.author.send(file=discord.File(os.path.dirname(__file__) + f'\\..\\transcripts\\{res3.channel.name}.txt'))
-                os.remove(os.path.dirname(__file__) + f'\\..\\transcripts\\{res3.channel.name}.txt')
-            
-            elif res3.component.label == '🔓 REOPEN TICKET':
-                embed=discord.Embed(title='Ticket Reopened', timestamp=datetime.datetime.utcnow(), color=65535)
-                embed.set_footer(icon_url= f'{res3.author.avatar_url}', text=f'{res3.author}')
-                await res3.channel.send(embed=embed)
-                await ctx.message.channel.edit(name=f'{ctx.message.guild.get_member(int(ctx.message.channel.topic))}')
-                await ctx.message.channel.set_permissions(ctx.message.guild.get_member(int(ctx.message.channel.topic)), send_messages=True, view_channel=True)
-            
-            elif res3.component.label == "❌ DELETE TICKET":
-                first = await ctx.send(embed=discord.Embed(description=f'Deleting this ticket in **5 seconds**', color=65535))
-                await asyncio.sleep(1); await first.edit(embed=discord.Embed(description=f'Deleting this ticket in **4 seconds**', color=65535))
-                await asyncio.sleep(1); await first.edit(embed=discord.Embed(description=f'Deleting this ticket in **3 seconds**', color=65535))
-                await asyncio.sleep(1); await first.edit(embed=discord.Embed(description=f'Deleting this ticket in **2 seconds**', color=65535))
-                await asyncio.sleep(1); await first.edit(embed=discord.Embed(description=f'Deleting this ticket in **1 seconds**', color=65535))
-                await ctx.message.channel.delete()
+                elif res3.component.label == '🔓 REOPEN TICKET':
+                    embed=discord.Embed(title='Ticket Reopened', timestamp=datetime.datetime.utcnow(), color=65535)
+                    embed.set_footer(icon_url= f'{res3.author.avatar_url}', text=f'{res3.author}')
+                    await res3.channel.send(embed=embed)
+                    await ctx.message.channel.edit(name=f'{ctx.message.guild.get_member(int(ctx.message.channel.topic))}')
+                    await ctx.message.channel.set_permissions(ctx.message.guild.get_member(int(ctx.message.channel.topic)), send_messages=True, view_channel=True)
+
+                elif res3.component.label == "❌ DELETE TICKET":
+                    first = await ctx.send(embed=discord.Embed(description=f'Deleting this ticket in **5 seconds**', color=65535))
+                    await asyncio.sleep(1); await first.edit(embed=discord.Embed(description=f'Deleting this ticket in **4 seconds**', color=65535))
+                    await asyncio.sleep(1); await first.edit(embed=discord.Embed(description=f'Deleting this ticket in **3 seconds**', color=65535))
+                    await asyncio.sleep(1); await first.edit(embed=discord.Embed(description=f'Deleting this ticket in **2 seconds**', color=65535))
+                    await asyncio.sleep(1); await first.edit(embed=discord.Embed(description=f'Deleting this ticket in **1 seconds**', color=65535))
+                    await ctx.message.channel.delete()
 
 
 
