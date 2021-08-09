@@ -13,4 +13,6 @@ This bot has most of the commands from the tickettool.xyz bot, if there's any bu
 
 ![image](https://user-images.githubusercontent.com/75189508/128780240-05405b9b-270a-4416-8bb2-49094f4cd352.png)
 ![image](https://user-images.githubusercontent.com/75189508/128780288-dc576140-7231-4185-8369-0b5ecce1bd5a.png)
-![image](https://user-images.githubusercontent.com/75189508/128780320-4d3dc940-3390-4631-b91b-25140b2c71fc.png)
+![image](https://user-images.githubusercontent.com/75189508/128780654-c444c603-3e84-4ae9-b7c4-826b0c01db6d.png)
+https://user-images.githubusercontent.com/75189508/128780622-16ca2dbb-c2b9-4bbf-879c-3b00223b1bb7.mp4
+
