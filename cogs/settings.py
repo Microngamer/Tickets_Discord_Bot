@@ -46,52 +46,27 @@ class Settings(commands.Cog):
                     await channel.send(f'<@&{data[str(res.guild.id)]["mod_roles"]}>', delete_after=1)
                     
                     await channel.send(embed=embed, components=[[
+                        Button(style=ButtonStyle.grey, label='✅ CLAIM TICKET'),
                         Button(style=ButtonStyle.grey, label="🔒 CLOSE TICKET"),
-                        Button(style=ButtonStyle.grey, label="❌ DELETE TICKET"),
-                        Button(style=ButtonStyle.grey, label='✅ CLAIM TICKET')
+                        Button(style=ButtonStyle.grey, label="❌ DELETE TICKET")
+                        
                     ]])
-                    close_res = await self.client.wait_for("button_click")
+                    while True:
+                        close_res = await self.client.wait_for("button_click")
 
 
-                    if close_res.component.label == '✅ CLAIM TICKET':
-                        modRole=close_res.guild.get_role(int(data[str(close_res.guild.id)]["mod_roles"]))
-                        await close_res.channel.set_permissions(modRole, send_messages=False, view_channel=True)
-                        await close_res.channel.set_permissions(close_res.author, send_messages=True, view_channel=True)
+                        if close_res.component.label == '✅ CLAIM TICKET':
+                            modRole=close_res.guild.get_role(int(data[str(close_res.guild.id)]["mod_roles"]))
+                            await close_res.channel.set_permissions(modRole, send_messages=False, view_channel=True)
+                            await close_res.channel.set_permissions(close_res.author, send_messages=True, view_channel=True)
 
-                        embed=discord.Embed(title='Ticket Claimed', timestamp=datetime.datetime.utcnow(), color=65535)
-                        embed.set_footer(icon_url= f'{close_res.author.avatar_url}', text=f'{close_res.author}')
-                        await close_res.channel.send(embed=embed); f.close()
+                            embed=discord.Embed(title='Ticket Claimed', timestamp=datetime.datetime.utcnow(), color=65535)
+                            embed.set_footer(icon_url= f'{close_res.author.avatar_url}', text=f'{close_res.author}')
+                            await close_res.channel.send(embed=embed)
 
 
-                    elif close_res.component.label == "🔒 CLOSE TICKET":
-                        await channel.edit(name=f'closed-{channel.name}')
-                        await channel.set_permissions(close_res.guild.get_member(int(close_res.channel.topic)), send_messages=False, view_channel=False)
-                        
-                        embed=discord.Embed(title='Ticket Closed', timestamp=datetime.datetime.utcnow(), color=65535)
-                        embed.set_footer(icon_url= f'{close_res.author.avatar_url}', text=f'{close_res.author}')
-                        await channel.send(embed=embed,components=[[
-                        Button(style=ButtonStyle.grey, label="✉️ SAVE TRANSCRIPT"),
-                        Button(style=ButtonStyle.grey, label="❌ DELETE TICKET"),
-                        Button(style=ButtonStyle.grey, label="🔓 REOPEN TICKET")
-                        ]])
-                        res2 = await self.client.wait_for("button_click")
-                        if res2.component.label == "✉️ SAVE TRANSCRIPT":
-                            with open(os.path.dirname(__file__) + f'\\..\\transcripts\\{close_res.channel.name}.txt', 'a') as f:
-                                messages = await close_res.channel.history(limit=200).flatten()
-                                for i in messages:
-                                    f.write(f'{i}\n')
-                                f.close
-                            await res2.author.send(file=discord.File(os.path.dirname(__file__) + f'\\..\\transcripts\\{res2.channel.name}.txt'))
-                            os.remove(os.path.dirname(__file__) + f'\\..\\transcripts\\{res2.channel.name}.txt')
-                        
-                        elif res2.component.label == '🔓 REOPEN TICKET':
-                            embed=discord.Embed(title='Ticket Reopened', timestamp=datetime.datetime.utcnow(), color=65535)
-                            embed.set_footer(icon_url= f'{res2.author.avatar_url}', text=f'{res2.author}')
-                            await res2.channel.send(embed=embed)
-                            await channel.edit(name=f'{ctx.message.guild.get_member(int(res2.channel.topic))}')
-                            await channel.set_permissions(close_res.guild.get_member(int(close_res.channel.topic)), send_messages=True, view_channel=True)
-                        
-                        elif res2.component.label == "❌ DELETE TICKET":
+
+                        if close_res.component.label == "❌ DELETE TICKET":
                             first = await channel.send(embed=discord.Embed(description=f'Deleting this ticket in **5 seconds**', color=65535))
                             await asyncio.sleep(1); await first.edit(embed=discord.Embed(description=f'Deleting this ticket in **4 seconds**', color=65535))
                             await asyncio.sleep(1); await first.edit(embed=discord.Embed(description=f'Deleting this ticket in **3 seconds**', color=65535))
@@ -99,13 +74,45 @@ class Settings(commands.Cog):
                             await asyncio.sleep(1); await first.edit(embed=discord.Embed(description=f'Deleting this ticket in **1 seconds**', color=65535))
                             await close_res.channel.delete()
 
-                    elif close_res.component.label == "❌ DELETE TICKET":
-                        first = await channel.send(embed=discord.Embed(description=f'Deleting this ticket in **5 seconds**', color=65535))
-                        await asyncio.sleep(1); await first.edit(embed=discord.Embed(description=f'Deleting this ticket in **4 seconds**', color=65535))
-                        await asyncio.sleep(1); await first.edit(embed=discord.Embed(description=f'Deleting this ticket in **3 seconds**', color=65535))
-                        await asyncio.sleep(1); await first.edit(embed=discord.Embed(description=f'Deleting this ticket in **2 seconds**', color=65535))
-                        await asyncio.sleep(1); await first.edit(embed=discord.Embed(description=f'Deleting this ticket in **1 seconds**', color=65535))
-                        await close_res.channel.delete()
+
+
+                        if close_res.component.label == "🔒 CLOSE TICKET":
+                            await channel.edit(name=f'closed-{channel.name}')
+                            await channel.set_permissions(close_res.guild.get_member(int(close_res.channel.topic)), send_messages=False, view_channel=False)
+                            
+                            embed=discord.Embed(title='Ticket Closed', timestamp=datetime.datetime.utcnow(), color=65535)
+                            embed.set_footer(icon_url= f'{close_res.author.avatar_url}', text=f'{close_res.author}')
+                            await channel.send(embed=embed,components=[[
+                            Button(style=ButtonStyle.grey, label="✉️ SAVE TRANSCRIPT"),
+                            Button(style=ButtonStyle.grey, label="🔓 REOPEN TICKET"),
+                            Button(style=ButtonStyle.grey, label="❌ DELETE TICKET")
+                            ]])
+
+                            while True:
+                                res2 = await self.client.wait_for("button_click")
+                                if res2.component.label == "✉️ SAVE TRANSCRIPT":
+                                    with open(os.path.dirname(__file__) + f'\\..\\transcripts\\{close_res.channel.name}.txt', 'a') as f:
+                                        messages = await close_res.channel.history(limit=200).flatten()
+                                        for i in messages:
+                                            f.write(f'{i}\n')
+                                        f.close
+                                    await res2.author.send(file=discord.File(os.path.dirname(__file__) + f'\\..\\transcripts\\{res2.channel.name}.txt'))
+                                    os.remove(os.path.dirname(__file__) + f'\\..\\transcripts\\{res2.channel.name}.txt')
+                                
+                                if res2.component.label == '🔓 REOPEN TICKET':
+                                    embed=discord.Embed(title='Ticket Reopened', timestamp=datetime.datetime.utcnow(), color=65535)
+                                    embed.set_footer(icon_url= f'{res2.author.avatar_url}', text=f'{res2.author}')
+                                    await res2.channel.send(embed=embed)
+                                    await channel.edit(name=f'{ctx.message.guild.get_member(int(res2.channel.topic))}')
+                                    await channel.set_permissions(close_res.guild.get_member(int(close_res.channel.topic)), send_messages=True, view_channel=True)
+                                
+                                if res2.component.label == "❌ DELETE TICKET":
+                                    first = await channel.send(embed=discord.Embed(description=f'Deleting this ticket in **5 seconds**', color=65535))
+                                    await asyncio.sleep(1); await first.edit(embed=discord.Embed(description=f'Deleting this ticket in **4 seconds**', color=65535))
+                                    await asyncio.sleep(1); await first.edit(embed=discord.Embed(description=f'Deleting this ticket in **3 seconds**', color=65535))
+                                    await asyncio.sleep(1); await first.edit(embed=discord.Embed(description=f'Deleting this ticket in **2 seconds**', color=65535))
+                                    await asyncio.sleep(1); await first.edit(embed=discord.Embed(description=f'Deleting this ticket in **1 seconds**', color=65535))
+                                    await close_res.channel.delete()
 
 
 
@@ -135,8 +142,6 @@ class Settings(commands.Cog):
             embed=discord.Embed(title=f'Ticket: {message.channel.name}', description=f'{message.content}', color=65535, timestamp=datetime.datetime.utcnow())
             embed.set_footer(icon_url= f'{message.author.avatar_url}', text=f'{message.author}')
             await channel.send(embed=embed)
-
-
 
 
 
