@@ -2,8 +2,7 @@ import discord, os, json
 from discord.ext import commands
 from discord.ext.commands import CommandNotFound, CommandInvokeError
 import datetime as datetime
-from discord_components import (DiscordComponents, Button, ButtonStyle, Select, SelectOption)
-
+from discord_components import *
 
 intents = discord.Intents(messages=True, guilds=True, reactions=True, members=True, presences=True)
 client = commands.Bot(command_prefix='=', intents=intents)
@@ -38,6 +37,23 @@ for filename in os.listdir(os.path.join(os.path.dirname(os.path.abspath(__file__
     if filename.endswith('.py'):
         client.load_extension(f'cogs.{filename[:-3]}')
         print(f'Loaded: cog.{filename[:-3]}')
+
+
+
+@client.command()
+async def help(ctx):
+    embed=discord.Embed(title='Ticket Commands', color=65535, timestamp=datetime.datetime.utcnow())
+    embed.add_field(name='Save Transcript', value='Saves the ticket transcript\n*=save*', inline=True)
+    embed.add_field(name='Claim Ticket [Mod+]', value='Claims the ticket\n*=claim*', inline=True)
+    embed.add_field(name='Close Ticket [Mod+]', value='Closes the ticket\n*=close*', inline=True)
+    embed.add_field(name='‏‏‎ ‎\nDelete Ticket [Mod+]', value='Deletes the ticket\n*=delete*', inline=True)
+    embed.add_field(name=' ‎\nAdd User [Mod+]', value='Adds an user to the ticket\n*=add @user*', inline=True)
+    embed.add_field(name=' ‎\nRemove User [Mod+]', value='Removes an user from the ticket\n*=remove @user*', inline=True)
+    embed.add_field(name=' ‎\nSet Mod Role [Admin+]', value='Sets the ticket mod role\n*=modrole @role*', inline=True)
+    embed.add_field(name=' ‎\nSetup [Admin+]', value='Sets up the bot\n*=setup @role*', inline=True)
+    embed.set_footer(icon_url= f'{ctx.author.avatar_url}', text=f'{ctx.author}')
+    await ctx.send(embed=embed)
+
 
 
 
