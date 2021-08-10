@@ -60,7 +60,7 @@ class Ticket(commands.Cog):
             embed=discord.Embed(title='Ticket Closed', timestamp=datetime.datetime.utcnow(), color=65535)
             embed.set_footer(icon_url= f'{ctx.author.avatar_url}', text=f'{ctx.author}')
             await ctx.send(embed=embed,components=[[
-            Button(style=ButtonStyle.grey, label="✉️ Save Transcript", custom_id='save_transcript'),
+            Button(style=ButtonStyle.grey, label="📃 Save Transcript", custom_id='save_transcript'),
             Button(style=ButtonStyle.grey, label="🔓 Reopen", custom_id='reopen_ticket'),
             Button(style=ButtonStyle.grey, label="❌ Delete", custom_id='delete_ticket')]])
             await ctx.message.channel.edit(name=f'closed-{ctx.message.channel.name}')
