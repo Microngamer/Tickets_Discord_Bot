@@ -48,7 +48,7 @@ class Settings(commands.Cog):
 
                     await channel.send(f'{res.author.mention}', delete_after=1)
                     await channel.send(f'<@&{data[str(res.guild.id)]["mod_roles"]}>', delete_after=1)
-                    await res.respond(type=InteractionType.ChannelMessageWithSource, content='**Ticket Created** {channel.mention}')
+                    await res.respond(type=InteractionType.ChannelMessageWithSource, content=f'**Ticket Created** {channel.mention}')
                 
                     await channel.send(embed=embed, components=[[
                         Button(style=ButtonStyle.grey, label='✅ CLAIM TICKET', custom_id='claim_ticket'),
@@ -68,7 +68,7 @@ class Settings(commands.Cog):
                 embed=discord.Embed(title='Ticket Claimed', timestamp=datetime.datetime.utcnow(), color=65535)
                 embed.set_footer(icon_url= f'{res.author.avatar_url}', text=f'{res.author}')
                 await res.channel.send(embed=embed)
-                await res.respond(type=InteractionType.ChannelMessageWithSource, content='**Ticket Claimed** {res.channel.mention}')
+                await res.respond(type=InteractionType.ChannelMessageWithSource, content=f'**Ticket Claimed** {res.channel.mention}')
 
 
 
@@ -83,7 +83,7 @@ class Settings(commands.Cog):
                 Button(style=ButtonStyle.grey, label="✉️ SAVE TRANSCRIPT", custom_id='save_transcript'),
                 Button(style=ButtonStyle.grey, label="🔓 REOPEN TICKET", custom_id='reopen_ticket'),
                 Button(style=ButtonStyle.grey, label="❌ DELETE TICKET")]])
-                await res.respond(type=InteractionType.ChannelMessageWithSource, content='**Ticket Closed** {res.channel.mention}')
+                await res.respond(type=InteractionType.ChannelMessageWithSource, content=f'**Ticket Closed** {res.channel.mention}')
 
                 
 
@@ -96,7 +96,7 @@ class Settings(commands.Cog):
                     f.close
                 await res.author.send(file=discord.File(os.path.dirname(__file__) + f'\\..\\transcripts\\{res.channel.name}.txt'))
                 os.remove(os.path.dirname(__file__) + f'\\..\\transcripts\\{res.channel.name}.txt')
-                await res.respond(type=InteractionType.ChannelMessageWithSource, content='**Transcript Saved** {res.channel.mention}')
+                await res.respond(type=InteractionType.ChannelMessageWithSource, content=f'**Transcript Saved** {res.channel.mention}')
                 
 
 
@@ -107,7 +107,7 @@ class Settings(commands.Cog):
                 await res.channel.send(embed=embed)
                 await channel.edit(name=f'{ctx.message.guild.get_member(int(res.channel.topic))}')
                 await channel.set_permissions(res.guild.get_member(int(res.channel.topic)), send_messages=True, view_channel=True)
-                await res.respond(type=InteractionType.ChannelMessageWithSource, content='**Ticket Reopened** {res.channel.mention}')
+                await res.respond(type=InteractionType.ChannelMessageWithSource, content=f'**Ticket Reopened** {res.channel.mention}')
 
 
 
