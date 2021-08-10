@@ -52,8 +52,7 @@ class Settings(commands.Cog):
                 
                     await channel.send(embed=embed, components=[[
                         Button(style=ButtonStyle.grey, label='✅ CLAIM TICKET', custom_id='claim_ticket'),
-                        Button(style=ButtonStyle.grey, label="🔒 CLOSE TICKET", custom_id='close_ticket'),
-                        Button(style=ButtonStyle.grey, label="❌ DELETE TICKET", custom_id='delete_ticket')
+                        Button(style=ButtonStyle.grey, label="🔒 CLOSE TICKET", custom_id='close_ticket')
                     ]])
                 
 
@@ -82,7 +81,7 @@ class Settings(commands.Cog):
                 await channel.send(embed=embed,components=[[
                 Button(style=ButtonStyle.grey, label="✉️ SAVE TRANSCRIPT", custom_id='save_transcript'),
                 Button(style=ButtonStyle.grey, label="🔓 REOPEN TICKET", custom_id='reopen_ticket'),
-                Button(style=ButtonStyle.grey, label="❌ DELETE TICKET")]])
+                Button(style=ButtonStyle.grey, label="❌ DELETE TICKET", custom_id='delete_ticket')]])
                 await res.respond(type=InteractionType.ChannelMessageWithSource, content=f'**Ticket Closed** {res.channel.mention}')
 
                 
