@@ -13,6 +13,6 @@ This bot has most of the commands from the tickettool.xyz bot, if there's any bu
 - Type =save to save the tickets transcript
 
 ![image](https://user-images.githubusercontent.com/75189508/128795263-f18f7b19-7628-4cc0-a566-bb54092f9bd2.png)
-![image](https://user-images.githubusercontent.com/75189508/128801142-b251c809-d7e3-493d-ad5d-42b20e9668b1.png)
-![image](https://user-images.githubusercontent.com/75189508/128801165-10b3ed64-3115-4f45-bab2-e92e8e5e0234.png)
+![image](https://user-images.githubusercontent.com/75189508/128801408-dc6d46a3-0640-4230-91ba-93a621476bde.png)
+![image](https://user-images.githubusercontent.com/75189508/128801366-9365d63b-0d83-4be6-bbc3-8428027f979f.png)
 
