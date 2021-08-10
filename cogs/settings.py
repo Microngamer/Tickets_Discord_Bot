@@ -11,8 +11,6 @@ class Settings(commands.Cog):
         self.client = client
 
 
-
-
     # Setting up the JSON File for the server and ticket
     @commands.command()
     @has_permissions(administrator=True)
@@ -55,8 +53,7 @@ class Settings(commands.Cog):
                         Button(style=ButtonStyle.grey, label='✅ Claim', custom_id='claim_ticket'),
                         Button(style=ButtonStyle.grey, label="✉️ Save", custom_id='save_transcript'),
                         Button(style=ButtonStyle.grey, label="🔒 Close", custom_id='close_ticket')
-                        
-                    ]])
+                      ]])
                 
 
 
@@ -95,10 +92,7 @@ class Settings(commands.Cog):
                 with open(os.path.dirname(__file__) + f'\\..\\transcripts\\{res.channel.name}.txt', 'a') as f:
                     messages = await res.channel.history().flatten()
                     for msg in messages:
-                        f.write(f'{msg.author}: {msg.content}  |  Sent: {msg.created_at}, Edited: {msg.edited_at}, Reactions: {msg.reactions}, ID {msg.id}, Attachments: {msg.attachments}, URL: {msg.jump_url}\n')
-
-                    for i in messages:
-                        f.write(f'\n{i}')
+                        f.write(f'{msg.author}: {msg.content}  |  Sent: {msg.created_at}, Edited: {msg.edited_at}, Reactions: {msg.reactions}, ID {msg.id}, Attachments: {msg.attachments}, URL: {msg.jump_url}, Activity: {msg.activity}, Type: {msg.type}, Reference: {msg.refereence}, Guild_ID: {msg.guild.id}, Guild: {msg.guild}\n')
                     f.close
                 await res.author.send(file=discord.File(os.path.dirname(__file__) + f'\\..\\transcripts\\{res.channel.name}.txt'))
                 os.remove(os.path.dirname(__file__) + f'\\..\\transcripts\\{res.channel.name}.txt')
@@ -132,8 +126,6 @@ class Settings(commands.Cog):
                 
 
 
-
-
     # Sending ticket messages to the ticket_logs channel
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -142,6 +134,10 @@ class Settings(commands.Cog):
             embed=discord.Embed(title=f'Ticket: {message.channel.name}', description=f'{message.content}', color=65535, timestamp=datetime.datetime.utcnow())
             embed.set_footer(icon_url= f'{message.author.avatar_url}', text=f'{message.author}')
             await channel.send(embed=embed)
+
+
+
+
 
 
 
