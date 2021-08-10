@@ -53,7 +53,9 @@ class Settings(commands.Cog):
                 
                     await channel.send(embed=embed, components=[[
                         Button(style=ButtonStyle.grey, label='✅ Claim', custom_id='claim_ticket'),
+                        Button(style=ButtonStyle.grey, label="✉️ Save", custom_id='save_transcript'),
                         Button(style=ButtonStyle.grey, label="🔒 Close", custom_id='close_ticket')
+                        
                     ]])
                 
 
@@ -81,7 +83,7 @@ class Settings(commands.Cog):
                 embed=discord.Embed(title='Ticket Closed', timestamp=datetime.datetime.utcnow(), color=65535)
                 embed.set_footer(icon_url= f'{res.author.avatar_url}', text=f'{res.author}')
                 await channel.send(embed=embed,components=[[
-                Button(style=ButtonStyle.grey, label="✉️ Save Transcript", custom_id='save_transcript'),
+                Button(style=ButtonStyle.grey, label="✉️ Save", custom_id='save_transcript'),
                 Button(style=ButtonStyle.grey, label="🔓 Reopen", custom_id='reopen_ticket'),
                 Button(style=ButtonStyle.grey, label="❌ Delete", custom_id='delete_ticket')]])
                 await res.respond(type=InteractionType.ChannelMessageWithSource, content=f'**Ticket Closed** {res.channel.mention}')
@@ -91,9 +93,12 @@ class Settings(commands.Cog):
             # Saving text transcript button
             if res.component.id == "save_transcript":
                 with open(os.path.dirname(__file__) + f'\\..\\transcripts\\{res.channel.name}.txt', 'a') as f:
-                    messages = await res.channel.history(limit=200).flatten()
+                    messages = await res.channel.history().flatten()
+                    for msg in messages:
+                        f.write(f'{msg.author}: {msg.content}  |  Sent: {msg.created_at}, Edited: {msg.edited_at}, Reactions: {msg.reactions}, ID {msg.id}, Attachments: {msg.attachments}, URL: {msg.jump_url}\n')
+
                     for i in messages:
-                        f.write(f'{i}\n')
+                        f.write(f'\n{i}')
                     f.close
                 await res.author.send(file=discord.File(os.path.dirname(__file__) + f'\\..\\transcripts\\{res.channel.name}.txt'))
                 os.remove(os.path.dirname(__file__) + f'\\..\\transcripts\\{res.channel.name}.txt')
@@ -137,9 +142,6 @@ class Settings(commands.Cog):
             embed=discord.Embed(title=f'Ticket: {message.channel.name}', description=f'{message.content}', color=65535, timestamp=datetime.datetime.utcnow())
             embed.set_footer(icon_url= f'{message.author.avatar_url}', text=f'{message.author}')
             await channel.send(embed=embed)
-
-
-
 
 
 
