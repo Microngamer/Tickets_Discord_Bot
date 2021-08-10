@@ -51,7 +51,7 @@ class Settings(commands.Cog):
                 
                     await channel.send(embed=embed, components=[[
                         Button(style=ButtonStyle.grey, label='✅ Claim', custom_id='claim_ticket'),
-                        Button(style=ButtonStyle.grey, label="✉️ Save", custom_id='save_transcript'),
+                        Button(style=ButtonStyle.grey, label="📃 Save", custom_id='save_transcript'),
                         Button(style=ButtonStyle.grey, label="🔒 Close", custom_id='close_ticket')
                       ]])
                 
@@ -80,8 +80,8 @@ class Settings(commands.Cog):
                 embed=discord.Embed(title='Ticket Closed', timestamp=datetime.datetime.utcnow(), color=65535)
                 embed.set_footer(icon_url= f'{res.author.avatar_url}', text=f'{res.author}')
                 await channel.send(embed=embed,components=[[
-                Button(style=ButtonStyle.grey, label="✉️ Save", custom_id='save_transcript'),
                 Button(style=ButtonStyle.grey, label="🔓 Reopen", custom_id='reopen_ticket'),
+                Button(style=ButtonStyle.grey, label="📃 Save", custom_id='save_transcript'),
                 Button(style=ButtonStyle.grey, label="❌ Delete", custom_id='delete_ticket')]])
                 await res.respond(type=InteractionType.ChannelMessageWithSource, content=f'**Ticket Closed** {res.channel.mention}')
 
