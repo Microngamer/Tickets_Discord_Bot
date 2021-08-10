@@ -20,6 +20,7 @@ class Ticket(commands.Cog):
             await ctx.send(embed=discord.Embed(description=f'{ctx.author.mention} added {user.mention} to the ticket', color=65535))
 
 
+
     # Removes an user from the current ticket
     @commands.command()
     @has_permissions(manage_messages=True)
@@ -60,6 +61,7 @@ class Ticket(commands.Cog):
 
 
 
+    #Claiming the current ticket
     @commands.command()
     async def claim(self, ctx):
         with open(os.path.dirname(__file__) + '\\..\\json\\data.json','r+') as f:
@@ -71,6 +73,24 @@ class Ticket(commands.Cog):
             embed=discord.Embed(title='Ticket Claimed', timestamp=datetime.datetime.utcnow(), color=65535)
             embed.set_footer(icon_url= f'{ctx.author.avatar_url}', text=f'{ctx.author}')
             await ctx.send(embed=embed); f.close()
+
+
+
+    # Adding a role that can view tickets to the JSON File
+    @commands.command()
+    @has_permissions(administrator=True)
+    async def modrole(self, ctx, role : discord.Role):
+        with open(os.path.dirname(__file__) + '\\..\\json\\data.json','r+') as f:
+            data=json.load(f)
+            data[str(ctx.message.guild.id)]["mod_roles"] = role.id
+
+            category = get(ctx.message.guild.categories, name='Tickets')
+            await category.set_permissions(role, send_messages=True, view_channel=True)
+            f.seek(0); json.dump(data, f, indent=4); f.truncate(); f.close()
+            await ctx.message.delete()
+            await ctx.send(embed=discord.Embed(description=f'{ctx.author.mention} set the ticket mod role to {role.mention}', color=65535, delete_after=2))
+
+
 
 
 
