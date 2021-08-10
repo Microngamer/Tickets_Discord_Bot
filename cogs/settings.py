@@ -18,9 +18,10 @@ class Settings(commands.Cog):
     @has_permissions(administrator=True)
     async def setup(self, ctx, modRole : discord.Role):
         with open(os.path.dirname(__file__) + '\\..\\json\\data.json','r+') as f:
-            data=json.load(f)
+            data=json.load(f); await ctx.message.delete()
             if str(ctx.message.guild.id) not in data:
-                data.update({str(ctx.message.guild.id) : {"mod_roles" : int(modRole.id)}}); f.seek(0); json.dump(data, f, indent=4); f.truncate(); f.close()
+                data.update({str(ctx.message.guild.id) : {"mod_roles" : int(modRole.id)}})
+                f.seek(0); json.dump(data, f, indent=4); f.truncate(); f.close()
             
             if not get(ctx.message.guild.categories, name='Tickets'):
                 category = await ctx.message.guild.create_category('Tickets')
@@ -57,17 +58,17 @@ class Settings(commands.Cog):
                 
 
 
-
             #Claiming a ticket button
             if res.component.id == 'claim_ticket':
-                modRole=res.guild.get_role(int(data[str(res.guild.id)]["mod_roles"]))
-                await res.channel.set_permissions(modRole, send_messages=False, view_channel=True)
-                await res.channel.set_permissions(res.author, send_messages=True, view_channel=True)
+                if res.guild.get_role(int(data[str(res.guild.id)]["mod_roles"])) in res.author.roles:
+                    modRole=res.guild.get_role(int(data[str(res.guild.id)]["mod_roles"]))
+                    await res.channel.set_permissions(modRole, send_messages=False, view_channel=True)
+                    await res.channel.set_permissions(res.author, send_messages=True, view_channel=True)
 
-                embed=discord.Embed(title='Ticket Claimed', timestamp=datetime.datetime.utcnow(), color=65535)
-                embed.set_footer(icon_url= f'{res.author.avatar_url}', text=f'{res.author}')
-                await res.channel.send(embed=embed)
-                await res.respond(type=InteractionType.ChannelMessageWithSource, content=f'**Ticket Claimed** {res.channel.mention}')
+                    embed=discord.Embed(title='Ticket Claimed', timestamp=datetime.datetime.utcnow(), color=65535)
+                    embed.set_footer(icon_url= f'{res.author.avatar_url}', text=f'{res.author}')
+                    await res.channel.send(embed=embed)
+                    await res.respond(type=InteractionType.ChannelMessageWithSource, content=f'**Ticket Claimed** {res.channel.mention}')
 
 
 
@@ -101,45 +102,31 @@ class Settings(commands.Cog):
 
             # Reopening a ticket button
             if res.component.id == 'reopen_ticket':
-                embed=discord.Embed(title='Ticket Reopened', timestamp=datetime.datetime.utcnow(), color=65535)
-                embed.set_footer(icon_url= f'{res.author.avatar_url}', text=f'{res.author}')
-                await res.channel.send(embed=embed)
-                await channel.edit(name=f'{ctx.message.guild.get_member(int(res.channel.topic))}')
-                await channel.set_permissions(res.guild.get_member(int(res.channel.topic)), send_messages=True, view_channel=True)
-                await res.respond(type=InteractionType.ChannelMessageWithSource, content=f'**Ticket Reopened** {res.channel.mention}')
+                if res.guild.get_role(int(data[str(res.guild.id)]["mod_roles"])) in res.author.roles:
+                    embed=discord.Embed(title='Ticket Reopened', timestamp=datetime.datetime.utcnow(), color=65535)
+                    embed.set_footer(icon_url= f'{res.author.avatar_url}', text=f'{res.author}')
+                    await res.channel.send(embed=embed)
+                    await channel.edit(name=f'{ctx.message.guild.get_member(int(res.channel.topic))}')
+                    await channel.set_permissions(res.guild.get_member(int(res.channel.topic)), send_messages=True, view_channel=True)
+                    await res.respond(type=InteractionType.ChannelMessageWithSource, content=f'**Ticket Reopened** {res.channel.mention}')
 
 
 
             # Deleting a ticket button
             if res.component.id == "delete_ticket":
-                first = await channel.send(embed=discord.Embed(description=f'Deleting this ticket in **5 seconds**', color=65535))
-                await asyncio.sleep(1); await first.edit(embed=discord.Embed(description=f'Deleting this ticket in **4 seconds**', color=65535))
-                await asyncio.sleep(1); await first.edit(embed=discord.Embed(description=f'Deleting this ticket in **3 seconds**', color=65535))
-                await asyncio.sleep(1); await first.edit(embed=discord.Embed(description=f'Deleting this ticket in **2 seconds**', color=65535))
-                await asyncio.sleep(1); await first.edit(embed=discord.Embed(description=f'Deleting this ticket in **1 seconds**', color=65535))
-                await res.channel.delete()
+                if res.guild.get_role(int(data[str(res.guild.id)]["mod_roles"])) in res.author.roles:
+                    first = await channel.send(embed=discord.Embed(description=f'Deleting this ticket in **5 seconds**', color=65535))
+                    await asyncio.sleep(1); await first.edit(embed=discord.Embed(description=f'Deleting this ticket in **4 seconds**', color=65535))
+                    await asyncio.sleep(1); await first.edit(embed=discord.Embed(description=f'Deleting this ticket in **3 seconds**', color=65535))
+                    await asyncio.sleep(1); await first.edit(embed=discord.Embed(description=f'Deleting this ticket in **2 seconds**', color=65535))
+                    await asyncio.sleep(1); await first.edit(embed=discord.Embed(description=f'Deleting this ticket in **1 seconds**', color=65535))
+                    await res.channel.delete()
                 
 
 
 
 
-    # Adding a role that can view tickets to the JSON File
-    @commands.command()
-    @has_permissions(administrator=True)
-    async def setrole(self, ctx, role : discord.Role):
-        with open(os.path.dirname(__file__) + '\\..\\json\\data.json','r+') as f:
-            data=json.load(f)
-            data[str(ctx.message.guild.id)]["mod_roles"] = role.id
-
-            category = get(ctx.message.guild.categories, name='Tickets')
-            await category.set_permissions(role, send_messages=True, view_channel=True)
-            f.seek(0); json.dump(data, f, indent=4); f.truncate(); f.close()
-            await ctx.message.delete()
-            await ctx.send(embed=discord.Embed(description=f'{ctx.author.mention} set the ticket mod role to {role.mention}', color=65535, delete_after=2))
-
-
-
-
+    # Sending ticket messages to the ticket_logs channel
     @commands.Cog.listener()
     async def on_message(self, message):
         if message.channel.category.name == 'Tickets' and message.author.id != self.client.user.id:
