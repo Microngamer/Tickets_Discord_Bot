@@ -48,15 +48,15 @@ class Ticket(commands.Cog):
     @commands.command()
     async def close(self, ctx):
         if ctx.message.channel.category.name == 'Tickets':
-            await ctx.message.channel.edit(name=f'closed-{ctx.message.channel.name}')
             await ctx.message.channel.set_permissions(ctx.message.guild.get_member(int(ctx.message.channel.topic)), send_messages=False, view_channel=False)
             
             embed=discord.Embed(title='Ticket Closed', timestamp=datetime.datetime.utcnow(), color=65535)
             embed.set_footer(icon_url= f'{ctx.author.avatar_url}', text=f'{ctx.author}')
             await ctx.send(embed=embed,components=[[
-            Button(style=ButtonStyle.grey, label="✉️ SAVE TRANSCRIPT"),
-            Button(style=ButtonStyle.grey, label="🔓 REOPEN TICKET"),
-            Button(style=ButtonStyle.grey, label="❌ DELETE TICKET")]])
+            Button(style=ButtonStyle.grey, label="✉️ SAVE TRANSCRIPT", custom_id='save_transcript'),
+            Button(style=ButtonStyle.grey, label="🔓 REOPEN TICKET", custom_id='reopen_ticket'),
+            Button(style=ButtonStyle.grey, label="❌ DELETE TICKET", custom_id='delete_ticket')]])
+            await ctx.message.channel.edit(name=f'closed-{ctx.message.channel.name}')
 
 
 
