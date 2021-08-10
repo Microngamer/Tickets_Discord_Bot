@@ -3,7 +3,7 @@ from discord.ext import commands
 from discord.utils import get, find
 from discord.ext.commands import has_permissions
 import datetime as datetime
-from discord_components import (DiscordComponents, Button, ButtonStyle, Select, SelectOption)
+from discord_components import *
 
 
 class Ticket(commands.Cog):
@@ -82,6 +82,21 @@ class Ticket(commands.Cog):
             f.close()
 
 
+    # Saves a tickets transcript
+    @commands.command()
+    async def save(self, ctx):
+        if ctx.message.channel.category.name == 'Tickets':
+            with open(os.path.dirname(__file__) + f'\\..\\transcripts\\{ctx.message.channel.name}.txt', 'a') as f:
+                messages = await ctx.message.channel.history().flatten()
+                for msg in messages:
+                    f.write(f'{msg.author}: {msg.content}  |  Sent: {msg.created_at}, Edited: {msg.edited_at}, Reactions: {msg.reactions}, ID {msg.id}, Attachments: {msg.attachments}, URL: {msg.jump_url}, Activity: {msg.activity}, Type: {msg.type}, Reference: {msg.refereence}, Guild_ID: {msg.guild.id}, Guild: {msg.guild}\n')
+                f.close
+            await ctx.author.send(file=discord.File(os.path.dirname(__file__) + f'\\..\\transcripts\\{ctx.message.channel.name}.txt'))
+            os.remove(os.path.dirname(__file__) + f'\\..\\transcripts\\{ctx.message.channel.name}.txt')
+            await ctx.respond(type=InteractionType.ChannelMessageWithSource, content=f'**Transcript Saved** {ctx.message.channel.mention}')
+
+
+
     # Adding a role that can view tickets to the JSON File
     @commands.command()
     @has_permissions(administrator=True)
@@ -94,6 +109,7 @@ class Ticket(commands.Cog):
             await category.set_permissions(role, send_messages=True, view_channel=True)
             f.seek(0); json.dump(data, f, indent=4); f.truncate(); f.close()
             await ctx.send(embed=discord.Embed(description=f'{ctx.author.mention} set the ticket mod role to {role.mention}', color=65535, delete_after=2))
+
 
 
 
