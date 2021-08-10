@@ -32,7 +32,7 @@ class Settings(commands.Cog):
 
         await ctx.send(
         embed=discord.Embed(title='New Ticket', description='Click here to create a new support ticket!', color=65535),
-        components=[Button(style=ButtonStyle.grey, label="📩 NEW TICKET", custom_id="new_ticket")])
+        components=[Button(style=ButtonStyle.grey, label="📩 Create Ticket", custom_id="new_ticket")])
 
 
         while True:
@@ -52,15 +52,16 @@ class Settings(commands.Cog):
                     await res.respond(type=InteractionType.ChannelMessageWithSource, content=f'**Ticket Created** {channel.mention}')
                 
                     await channel.send(embed=embed, components=[[
-                        Button(style=ButtonStyle.grey, label='✅ CLAIM TICKET', custom_id='claim_ticket'),
-                        Button(style=ButtonStyle.grey, label="🔒 CLOSE TICKET", custom_id='close_ticket')
+                        Button(style=ButtonStyle.grey, label='✅ Claim', custom_id='claim_ticket'),
+                        Button(style=ButtonStyle.grey, label="🔒 Close", custom_id='close_ticket')
                     ]])
                 
 
 
             #Claiming a ticket button
             if res.component.id == 'claim_ticket':
-                if res.guild.get_role(int(data[str(res.guild.id)]["mod_roles"])) in res.author.roles:
+                user = res.guild.get_member(int(res.author.id))
+                if res.guild.get_role(int(data[str(res.guild.id)]["mod_roles"])) in user.roles:
                     modRole=res.guild.get_role(int(data[str(res.guild.id)]["mod_roles"]))
                     await res.channel.set_permissions(modRole, send_messages=False, view_channel=True)
                     await res.channel.set_permissions(res.author, send_messages=True, view_channel=True)
@@ -80,9 +81,9 @@ class Settings(commands.Cog):
                 embed=discord.Embed(title='Ticket Closed', timestamp=datetime.datetime.utcnow(), color=65535)
                 embed.set_footer(icon_url= f'{res.author.avatar_url}', text=f'{res.author}')
                 await channel.send(embed=embed,components=[[
-                Button(style=ButtonStyle.grey, label="✉️ SAVE TRANSCRIPT", custom_id='save_transcript'),
-                Button(style=ButtonStyle.grey, label="🔓 REOPEN TICKET", custom_id='reopen_ticket'),
-                Button(style=ButtonStyle.grey, label="❌ DELETE TICKET", custom_id='delete_ticket')]])
+                Button(style=ButtonStyle.grey, label="✉️ Save Transcript", custom_id='save_transcript'),
+                Button(style=ButtonStyle.grey, label="🔓 Reopen", custom_id='reopen_ticket'),
+                Button(style=ButtonStyle.grey, label="❌ Delete", custom_id='delete_ticket')]])
                 await res.respond(type=InteractionType.ChannelMessageWithSource, content=f'**Ticket Closed** {res.channel.mention}')
 
                 
@@ -102,7 +103,8 @@ class Settings(commands.Cog):
 
             # Reopening a ticket button
             if res.component.id == 'reopen_ticket':
-                if res.guild.get_role(int(data[str(res.guild.id)]["mod_roles"])) in res.author.roles:
+                user = res.guild.get_member(int(res.author.id))
+                if res.guild.get_role(int(data[str(res.guild.id)]["mod_roles"])) in user.roles:
                     embed=discord.Embed(title='Ticket Reopened', timestamp=datetime.datetime.utcnow(), color=65535)
                     embed.set_footer(icon_url= f'{res.author.avatar_url}', text=f'{res.author}')
                     await res.channel.send(embed=embed)
@@ -114,7 +116,8 @@ class Settings(commands.Cog):
 
             # Deleting a ticket button
             if res.component.id == "delete_ticket":
-                if res.guild.get_role(int(data[str(res.guild.id)]["mod_roles"])) in res.author.roles:
+                user = res.guild.get_member(int(res.author.id))
+                if res.guild.get_role(int(data[str(res.guild.id)]["mod_roles"])) in user.roles:
                     first = await channel.send(embed=discord.Embed(description=f'Deleting this ticket in **5 seconds**', color=65535))
                     await asyncio.sleep(1); await first.edit(embed=discord.Embed(description=f'Deleting this ticket in **4 seconds**', color=65535))
                     await asyncio.sleep(1); await first.edit(embed=discord.Embed(description=f'Deleting this ticket in **3 seconds**', color=65535))
