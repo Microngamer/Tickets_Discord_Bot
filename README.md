@@ -11,7 +11,7 @@ This bot has most of the commands from the tickettool.xyz bot, if there's any bu
 - Type =add @user to add an user to the ticket
 - Type =remove @user to remove an user from the ticket
 
-![image](https://user-images.githubusercontent.com/75189508/128780240-05405b9b-270a-4416-8bb2-49094f4cd352.png)
-![image](https://user-images.githubusercontent.com/75189508/128780288-dc576140-7231-4185-8369-0b5ecce1bd5a.png)
-![image](https://user-images.githubusercontent.com/75189508/128780654-c444c603-3e84-4ae9-b7c4-826b0c01db6d.png)
+![image](https://user-images.githubusercontent.com/75189508/128795263-f18f7b19-7628-4cc0-a566-bb54092f9bd2.png)
+![image](https://user-images.githubusercontent.com/75189508/128795299-650f7b54-daf3-4344-bd2a-b95863c9d452.png)
+![image](https://user-images.githubusercontent.com/75189508/128795330-a70fb959-2038-49d7-8cac-8d9da0f89cee.png)
 
