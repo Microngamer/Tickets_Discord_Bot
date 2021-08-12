@@ -74,12 +74,12 @@ class Settings(commands.Cog):
 
             # Closing a ticket button
             if res.component.id == "close_ticket":
-                await channel.edit(name=f'closed-{channel.name}')
-                await channel.set_permissions(res.guild.get_member(int(res.channel.topic)), send_messages=False, view_channel=False)
+                await res.channel.edit(name=f'closed-{res.channel.name}')
+                await res.channel.set_permissions(res.guild.get_member(int(res.channel.topic)), send_messages=False, view_channel=False)
                 
                 embed=discord.Embed(title='Ticket Closed', timestamp=datetime.datetime.utcnow(), color=65535)
                 embed.set_footer(icon_url= f'{res.author.avatar_url}', text=f'{res.author}')
-                await channel.send(embed=embed,components=[[
+                await res.channel.send(embed=embed,components=[[
                 Button(style=ButtonStyle.grey, label="🔓 Reopen", custom_id='reopen_ticket'),
                 Button(style=ButtonStyle.grey, label="📃 Save", custom_id='save_transcript'),
                 Button(style=ButtonStyle.grey, label="❌ Delete", custom_id='delete_ticket')]])
@@ -107,8 +107,8 @@ class Settings(commands.Cog):
                     embed=discord.Embed(title='Ticket Reopened', timestamp=datetime.datetime.utcnow(), color=65535)
                     embed.set_footer(icon_url= f'{res.author.avatar_url}', text=f'{res.author}')
                     await res.channel.send(embed=embed)
-                    await channel.edit(name=f'{ctx.message.guild.get_member(int(res.channel.topic))}')
-                    await channel.set_permissions(res.guild.get_member(int(res.channel.topic)), send_messages=True, view_channel=True)
+                    await res.channel.edit(name=f'{ctx.message.guild.get_member(int(res.channel.topic))}')
+                    await res.channel.set_permissions(res.guild.get_member(int(res.channel.topic)), send_messages=True, view_channel=True)
                     await res.respond(type=InteractionType.ChannelMessageWithSource, content=f'**Ticket Reopened** {res.channel.mention}')
 
 
@@ -117,7 +117,7 @@ class Settings(commands.Cog):
             if res.component.id == "delete_ticket":
                 user = res.guild.get_member(int(res.author.id))
                 if res.guild.get_role(int(data[str(res.guild.id)]["mod_roles"])) in user.roles:
-                    first = await channel.send(embed=discord.Embed(description=f'Deleting this ticket in **5 seconds**', color=65535))
+                    first = await res.channel.send(embed=discord.Embed(description=f'Deleting this ticket in **5 seconds**', color=65535))
                     await asyncio.sleep(1); await first.edit(embed=discord.Embed(description=f'Deleting this ticket in **4 seconds**', color=65535))
                     await asyncio.sleep(1); await first.edit(embed=discord.Embed(description=f'Deleting this ticket in **3 seconds**', color=65535))
                     await asyncio.sleep(1); await first.edit(embed=discord.Embed(description=f'Deleting this ticket in **2 seconds**', color=65535))
@@ -130,10 +130,10 @@ class Settings(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message):
         if message.channel.category.name == 'Tickets' and message.author.id != self.client.user.id:
-            channel = get(message.guild.channels, name='ticket_logs')
+            log_channel = get(message.guild.channels, name='ticket_logs')
             embed=discord.Embed(title=f'Ticket: {message.channel.name}', description=f'{message.content}', color=65535, timestamp=datetime.datetime.utcnow())
             embed.set_footer(icon_url= f'{message.author.avatar_url}', text=f'{message.author}')
-            await channel.send(embed=embed)
+            await log_channel.send(embed=embed)
 
 
 
