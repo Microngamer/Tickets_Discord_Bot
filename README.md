@@ -2,6 +2,7 @@
 This bot has most of the commands from the tickettool.xyz bot, if there's any bugs, please DM tristan#2230 on discord
 
 - After creating a new ticket, you can use all these commands through buttons
+- Create a new folder named transcripts
 
 - Type =claim to claim a ticket
 - Type =close to close a ticket
