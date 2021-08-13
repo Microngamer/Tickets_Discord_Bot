@@ -92,7 +92,7 @@ class Settings(commands.Cog):
                 with open(os.path.dirname(__file__) + f'\\..\\transcripts\\{res.channel.name}.txt', 'a') as f:
                     messages = await res.channel.history().flatten()
                     for msg in messages:
-                        f.write(f'{msg.author}: {msg.content}  |  Sent: {msg.created_at}, Edited: {msg.edited_at}, Reactions: {msg.reactions}, ID {msg.id}, Attachments: {msg.attachments}, URL: {msg.jump_url}, Activity: {msg.activity}, Type: {msg.type}, Reference: {msg.refereence}, Guild_ID: {msg.guild.id}, Guild: {msg.guild}\n')
+                        f.write(f'{msg.author}: {msg.content}  |  Sent: {msg.created_at}, Edited: {msg.edited_at}, Reactions: {msg.reactions}, ID {msg.id}, Attachments: {msg.attachments}, URL: {msg.jump_url}, Activity: {msg.activity}, Type: {msg.type}, Reference: {msg.reference}, Guild_ID: {msg.guild.id}, Guild: {msg.guild}\n')
                     f.close
                 await res.author.send(file=discord.File(os.path.dirname(__file__) + f'\\..\\transcripts\\{res.channel.name}.txt'))
                 os.remove(os.path.dirname(__file__) + f'\\..\\transcripts\\{res.channel.name}.txt')
