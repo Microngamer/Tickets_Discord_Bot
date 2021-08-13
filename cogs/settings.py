@@ -33,97 +33,106 @@ class Settings(commands.Cog):
         components=[Button(style=ButtonStyle.grey, label="📩 Create Ticket", custom_id="new_ticket")])
 
 
-        while True:
-            res = await self.client.wait_for("button_click"); category = get(res.guild.categories, name='Tickets')
+            
+                
+    @commands.Cog.listener()
+    async def on_button_click(self, interaction):
+        with open(os.path.dirname(__file__) + '\\..\\json\\data.json','r+') as f:
+            data=json.load(f); category = get(interaction.guild.categories, name='Tickets')
+            if interaction.component.id == "new_ticket":
+                if not get(interaction.guild.channels, name=f'{interaction.author}'):
 
-            # Creating a new ticket button
-            if res.component.id == "new_ticket":
-                if not get(res.guild.channels, name=f'{res.author}'):
-
-                    channel = await res.guild.create_text_channel(f'{res.author}', topic=f'{res.author.id}', category=category)
-                    await channel.set_permissions(res.author, send_messages=True, view_channel=True)
+                    channel = await interaction.guild.create_text_channel(f'{interaction.author}', topic=f'{interaction.author.id}', category=category)
+                    await channel.set_permissions(interaction.author, send_messages=True, view_channel=True)
                     embed = discord.Embed(title='New Support Ticket', color=65535, timestamp=datetime.datetime.utcnow())
-                    embed.set_footer(icon_url= f'{res.author.avatar_url}', text=f'{res.author}')
+                    embed.set_footer(icon_url= f'{interaction.author.avatar_url}', text=f'{interaction.author}')
 
-                    await channel.send(f'{res.author.mention}', delete_after=1)
-                    await channel.send(f'<@&{data[str(res.guild.id)]["mod_roles"]}>', delete_after=1)
-                    await res.respond(type=InteractionType.ChannelMessageWithSource, content=f'**Ticket Created** {channel.mention}')
+                    await channel.send(f'{interaction.author.mention}', delete_after=1)
+                    await channel.send(f'<@&{data[str(interaction.guild.id)]["mod_roles"]}>', delete_after=1)
+                    await interaction.respond(type=InteractionType.ChannelMessageWithSource, content=f'**Ticket Created** {channel.mention}')
                 
                     await channel.send(embed=embed, components=[[
                         Button(style=ButtonStyle.grey, label='✅ Claim', custom_id='claim_ticket'),
                         Button(style=ButtonStyle.grey, label="📃 Save", custom_id='save_transcript'),
                         Button(style=ButtonStyle.grey, label="🔒 Close", custom_id='close_ticket')
-                      ]])
+                        ]])
                 
 
 
             #Claiming a ticket button
-            if res.component.id == 'claim_ticket':
-                user = res.guild.get_member(int(res.author.id))
-                if res.guild.get_role(int(data[str(res.guild.id)]["mod_roles"])) in user.roles:
-                    modRole=res.guild.get_role(int(data[str(res.guild.id)]["mod_roles"]))
-                    await res.channel.set_permissions(modRole, send_messages=False, view_channel=True)
-                    await res.channel.set_permissions(res.author, send_messages=True, view_channel=True)
+            if interaction.component.id == 'claim_ticket':
+                user = interaction.guild.get_member(int(interaction.author.id))
+                if interaction.guild.get_role(int(data[str(interaction.guild.id)]["mod_roles"])) in user.roles:
+                    modRole=interaction.guild.get_role(int(data[str(interaction.guild.id)]["mod_roles"]))
+                    await interaction.channel.set_permissions(modRole, send_messages=False, view_channel=True)
+                    await interaction.channel.set_permissions(interaction.author, send_messages=True, view_channel=True)
 
                     embed=discord.Embed(title='Ticket Claimed', timestamp=datetime.datetime.utcnow(), color=65535)
-                    embed.set_footer(icon_url= f'{res.author.avatar_url}', text=f'{res.author}')
-                    await res.channel.send(embed=embed)
-                    await res.respond(type=InteractionType.ChannelMessageWithSource, content=f'**Ticket Claimed** {res.channel.mention}')
+                    embed.set_footer(icon_url= f'{interaction.author.avatar_url}', text=f'{interaction.author}')
+                    await interaction.channel.send(embed=embed)
+                    await interaction.respond(type=InteractionType.ChannelMessageWithSource, content=f'**Ticket Claimed** {interaction.channel.mention}')
 
 
 
             # Closing a ticket button
-            if res.component.id == "close_ticket":
-                await res.channel.edit(name=f'closed-{res.channel.name}')
-                await res.channel.set_permissions(res.guild.get_member(int(res.channel.topic)), send_messages=False, view_channel=False)
+            if interaction.component.id == "close_ticket":
+                await interaction.channel.edit(name=f'closed-{interaction.channel.name}')
+                await interaction.channel.set_permissions(interaction.guild.get_member(int(interaction.channel.topic)), send_messages=False, view_channel=False)
                 
                 embed=discord.Embed(title='Ticket Closed', timestamp=datetime.datetime.utcnow(), color=65535)
-                embed.set_footer(icon_url= f'{res.author.avatar_url}', text=f'{res.author}')
-                await res.channel.send(embed=embed,components=[[
+                embed.set_footer(icon_url= f'{interaction.author.avatar_url}', text=f'{interaction.author}')
+                await interaction.channel.send(embed=embed, components=[[
                 Button(style=ButtonStyle.grey, label="🔓 Reopen", custom_id='reopen_ticket'),
                 Button(style=ButtonStyle.grey, label="📃 Save", custom_id='save_transcript'),
                 Button(style=ButtonStyle.grey, label="❌ Delete", custom_id='delete_ticket')]])
-                await res.respond(type=InteractionType.ChannelMessageWithSource, content=f'**Ticket Closed** {res.channel.mention}')
+                await interaction.respond(type=InteractionType.ChannelMessageWithSource, content=f'**Ticket Closed** {interaction.channel.mention}')
 
                 
 
             # Saving text transcript button
-            if res.component.id == "save_transcript":
-                with open(os.path.dirname(__file__) + f'\\..\\transcripts\\{res.channel.name}.txt', 'a') as f:
-                    messages = await res.channel.history().flatten()
+            if interaction.component.id == "save_transcript":
+                with open(os.path.dirname(__file__) + f'\\..\\transcripts\\{interaction.channel.name}.txt', 'a') as f:
+                    messages = await interaction.channel.history().flatten()
                     for msg in messages:
                         f.write(f'{msg.author}: {msg.content}  |  Sent: {msg.created_at}, Edited: {msg.edited_at}, Reactions: {msg.reactions}, ID {msg.id}, Attachments: {msg.attachments}, URL: {msg.jump_url}, Activity: {msg.activity}, Type: {msg.type}, Reference: {msg.reference}, Guild_ID: {msg.guild.id}, Guild: {msg.guild}\n')
                     f.close
-                await res.author.send(file=discord.File(os.path.dirname(__file__) + f'\\..\\transcripts\\{res.channel.name}.txt'))
-                os.remove(os.path.dirname(__file__) + f'\\..\\transcripts\\{res.channel.name}.txt')
-                await res.respond(type=InteractionType.ChannelMessageWithSource, content=f'**Transcript Saved** {res.channel.mention}')
+                await interaction.author.send(file=discord.File(os.path.dirname(__file__) + f'\\..\\transcripts\\{interaction.channel.name}.txt'))
+                os.remove(os.path.dirname(__file__) + f'\\..\\transcripts\\{interaction.channel.name}.txt')
+                await interaction.respond(type=InteractionType.ChannelMessageWithSource, content=f'**Transcript Saved** {interaction.channel.mention}')
                 
 
 
             # Reopening a ticket button
-            if res.component.id == 'reopen_ticket':
-                user = res.guild.get_member(int(res.author.id))
-                if res.guild.get_role(int(data[str(res.guild.id)]["mod_roles"])) in user.roles:
+            if interaction.component.id == 'reopen_ticket':
+                user = interaction.guild.get_member(int(interaction.author.id))
+                if interaction.guild.get_role(int(data[str(interaction.guild.id)]["mod_roles"])) in user.roles:
                     embed=discord.Embed(title='Ticket Reopened', timestamp=datetime.datetime.utcnow(), color=65535)
-                    embed.set_footer(icon_url= f'{res.author.avatar_url}', text=f'{res.author}')
-                    await res.channel.send(embed=embed)
-                    await res.channel.edit(name=f'{ctx.message.guild.get_member(int(res.channel.topic))}')
-                    await res.channel.set_permissions(res.guild.get_member(int(res.channel.topic)), send_messages=True, view_channel=True)
-                    await res.respond(type=InteractionType.ChannelMessageWithSource, content=f'**Ticket Reopened** {res.channel.mention}')
+                    embed.set_footer(icon_url= f'{interaction.author.avatar_url}', text=f'{interaction.author}')
+                    await interaction.channel.send(embed=embed)
+                    await interaction.channel.edit(name=f'{interaction.guild.get_member(int(interaction.channel.topic))}')
+                    await interaction.channel.set_permissions(interaction.guild.get_member(int(interaction.channel.topic)), send_messages=True, view_channel=True)
+                    await interaction.respond(type=InteractionType.ChannelMessageWithSource, content=f'**Ticket Reopened** {interaction.channel.mention}')
 
 
 
             # Deleting a ticket button
-            if res.component.id == "delete_ticket":
-                user = res.guild.get_member(int(res.author.id))
-                if res.guild.get_role(int(data[str(res.guild.id)]["mod_roles"])) in user.roles:
-                    first = await res.channel.send(embed=discord.Embed(description=f'Deleting this ticket in **5 seconds**', color=65535))
+            if interaction.component.id == "delete_ticket":
+                user = interaction.guild.get_member(int(interaction.author.id))
+                if interaction.guild.get_role(int(data[str(interaction.guild.id)]["mod_roles"])) in user.roles:
+                    first = await interaction.channel.send(embed=discord.Embed(description=f'Deleting this ticket in **5 seconds**', color=65535))
                     await asyncio.sleep(1); await first.edit(embed=discord.Embed(description=f'Deleting this ticket in **4 seconds**', color=65535))
                     await asyncio.sleep(1); await first.edit(embed=discord.Embed(description=f'Deleting this ticket in **3 seconds**', color=65535))
                     await asyncio.sleep(1); await first.edit(embed=discord.Embed(description=f'Deleting this ticket in **2 seconds**', color=65535))
                     await asyncio.sleep(1); await first.edit(embed=discord.Embed(description=f'Deleting this ticket in **1 seconds**', color=65535))
-                    await res.channel.delete()
-                
+                    await interaction.channel.delete()
+
+
+
+
+
+
+
+
 
 
     # Sending ticket messages to the ticket_logs channel
