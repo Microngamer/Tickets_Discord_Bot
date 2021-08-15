@@ -22,7 +22,7 @@ class Ticket(commands.Cog):
      # Writing to the JSON File
     def write(self, file, data):
         with open(os.path.dirname(__file__) + f'\\..\\json\\{file}.json','w') as f:
-            djson.dump(data, f, indent=4)
+            json.dump(data, f, indent=4)
         
         
         
