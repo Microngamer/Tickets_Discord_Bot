@@ -128,7 +128,7 @@ class Settings(commands.Cog):
     # Sending ticket messages to the ticket_logs channel
     @commands.Cog.listener()
     async def on_message(self, message):
-        if message.channel.category.name == 'Tickets' and message.author.id != self.client.user.id:
+        if message.channel.category.name == 'Tickets' and not message.author.bot:
             log_channel = get(message.guild.channels, name='ticket_logs')
             embed=discord.Embed(title=f'Ticket: {message.channel.name}', description=f'{message.content}', color=65535, timestamp=datetime.datetime.utcnow())
             embed.set_footer(icon_url= f'{message.author.avatar_url}', text=f'{message.author}')
