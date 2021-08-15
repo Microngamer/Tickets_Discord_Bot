@@ -48,7 +48,7 @@ class Ticket(commands.Cog):
     async def delete(self, ctx):
         if self.check(ctx):
             first = await ctx.send(embed=discord.Embed(description=f'Deleting this ticket in **5 seconds**', color=65535))
-            for i in reversed(range(5)):
+            for i in reversed(range(4)):
                 await asyncio.sleep(1); await first.edit(embed=discord.Embed(description=f'Deleting this ticket in **{i} seconds**', color=65535))
             await ctx.message.channel.delete()
 
