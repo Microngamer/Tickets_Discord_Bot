@@ -24,8 +24,7 @@ class Ticket(commands.Cog):
         with open(os.path.dirname(__file__) + f'\\..\\json\\{file}.json','w') as f:
             json.dump(data, f, indent=4)
         
-        
-        
+       
     # Adds an user to the current ticket
     @commands.command()
     async def add(self, ctx, user : discord.Member):
